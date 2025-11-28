@@ -206,3 +206,5 @@ def listar_catalogo(catalogo):
     print("\n=======================================================")
     print(f"RESUMEN: Total de libros en el catálogo: {total_libros_general}")
     print("=======================================================")
+    
+#probando a ver como funciona
