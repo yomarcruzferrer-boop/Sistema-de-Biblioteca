@@ -243,3 +243,78 @@ def devolver_libro(catalogo): #Solicita un título al usuario y lo devuelve.
             print(f"⚠️ El libro '{libro['titulo']}' ya está disponible.")
     else:
         print(f"❌ Error: No encontramos el libro '{titulo}' en el catálogo para devolverlo.")
+
+#-REPORTES Y ESTADISTICAS- (PARTE DE ANGEL) -
+def mostrar_libros_disponibles(catalogo): #Genera un reporte de todos los libros que están disponibles.
+    print("\n=======================================")
+    print("   📊 REPORTE DE LIBROS DISPONIBLES    ")
+    print("=======================================")
+    
+    hay_disponibles = False
+    
+    # Recorre las categorías y listas de libros
+    for categoria, lista_libros in catalogo.items(): #Filtra solo los libros disponibles en esta categoría
+        libros_cat_disponibles = [libro for libro in lista_libros if libro.get("disponible", True)]
+        if libros_cat_disponibles:
+            hay_disponibles = True
+            print(f"\n📂 Categoría: {categoria}")
+            for libro in libros_cat_disponibles:
+                print(f"   - {libro['titulo']} (Autor: {libro['autor']})")
+
+    if not hay_disponibles:
+        print("\n⚠️ No hay libros disponibles en este momento. Todos están prestados")
+    print("\n---------------------------------------")
+
+
+def mostrar_libros_prestados(catalogo): #Genera un reporte de todos los libros que están prestados.
+    print("\n=======================================")
+    print("    📊 REPORTE DE LIBROS PRESTADOS     ")
+    print("=======================================")
+    
+    hay_prestados = False
+    
+    for categoria, lista_libros in catalogo.items(): #Filtra solo los libros que no están disponibles (prestados)
+        libros_cat_prestados = [libro for libro in lista_libros if not libro.get("disponible", True)]
+        if libros_cat_prestados:
+            hay_prestados = True
+            print(f"\n📂 Categoría: {categoria}")
+            for libro in libros_cat_prestados:
+                print(f" - {libro['titulo']} (Año: {libro['año']})")
+    if not hay_prestados:
+        print("\n🎉 No se encuentran libros prestados. Todo el catalogo está en la biblioteca.")
+    print("\n---------------------------------------")
+
+def generar_estadisticas_uso(catalogo): #Calcula las estadísticas (total de libros, prestados y % de ocupación)
+    print("\n=======================================")
+    print("      📈 ESTADÍSTICAS DE LA BIBLIOTECA  ")
+    print("=======================================")
+    
+    total_libros = 0
+    total_prestados = 0
+    
+    # Recorrido para conteo
+    for lista_libros in catalogo.values():
+        total_libros += len(lista_libros)
+        for libro in lista_libros:
+            if not libro.get("disponible", True):
+                total_prestados += 1
+    
+    # Para calcular
+    total_disponibles = total_libros - total_prestados
+    
+    if total_libros > 0:
+        porcentaje_ocupacion = (total_prestados / total_libros) * 100
+        porcentaje_disponibilidad = (total_disponibles / total_libros) * 100
+    else:
+        porcentaje_ocupacion = 0.0
+        porcentaje_disponibilidad = 0.0
+
+    # Imprime los resultados
+    print(f"📚 Total de Libros en Catálogo:  {total_libros}")
+    print(f"❌ Libros Prestados:             {total_prestados}")
+    print(f"✅ Libros Disponibles:           {total_disponibles}")
+    print("---------------------------------------")
+    print(f"📊 Porcentaje de Préstamos:      {porcentaje_ocupacion:.2f}%")
+    print(f"📊 Porcentaje de Disponibilidad: {porcentaje_disponibilidad:.2f}%")
+    print("=======================================")
+    
