@@ -207,4 +207,45 @@ def listar_catalogo(catalogo):
     print(f"RESUMEN: Total de libros en el catálogo: {total_libros_general}")
     print("=======================================================")
     
-#probando a ver como funciona
+#probando cambios
+# — PRÉSTAMOS, DEVOLUCIONES Y DISPONIBILIDAD - (PARTE DE SIGNY) -
+def _buscar_libro(catalogo, titulo_buscado): #Función para buscar un libro por título, retorna al diccionario si existe, o None si no.
+    for lista_libros in catalogo.values(): # Recorre el diccionario
+        for libro in lista_libros:
+            if libro["titulo"].strip().lower() == titulo_buscado.strip().lower():
+                return libro
+    return None
+
+def prestar_libro(catalogo): #Solicita un título al usuario y gestiona el préstamo cambiando la disponibilidad.
+    print("\n--- 📖 PRÉSTAMO DE LIBROS ---")
+    titulo = input("Ingrese el título del libro que desea usar: ").strip()
+    if not titulo:
+        print("❌ Error: Debe de ingresar el nombre del título.")
+        return
+    #Para buscar
+    libro = _buscar_libro(catalogo, titulo)
+    if libro: # Verifica si está disponible
+        if libro["disponible"]:
+            libro["disponible"] = False
+            print(f"✅Has pedido prestado el libro: '{libro['titulo']}'.")
+        else:
+            print(f"⚠️ El libro '{libro['titulo']}' ya se encuentra prestado actualmente.")
+    else:
+        print(f"❌ Error: No encontramos el libro '{titulo}' en el catálogo.")
+
+def devolver_libro(catalogo): #Solicita un título al usuario y lo devuelve.
+    print("\n--- ↩️ DEVOLUCION DE LIBROS ---")
+    titulo = input("Ingrese el título del libro que desea devolver: ").strip()
+    if not titulo:
+        print("❌ Error: Debe de ingresar el nombre del título.")
+        return
+    #Buscar el libro (de nuevo xd)
+    libro = _buscar_libro(catalogo, titulo)
+    if libro:
+        if not libro["disponible"]: # Verifica si no está disponible
+            libro["disponible"] = True
+            print(f"✅ ¡Gracias! Has devuelto el libro: '{libro['titulo']}'.")
+        else:
+            print(f"⚠️ El libro '{libro['titulo']}' ya está disponible.")
+    else:
+        print(f"❌ Error: No encontramos el libro '{titulo}' en el catálogo para devolverlo.")
