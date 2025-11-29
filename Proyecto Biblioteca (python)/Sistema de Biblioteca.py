@@ -140,7 +140,7 @@ catalogo_principal = {
 #Funcion para agregar libros y crear catalogos, para el usuario
 def agregar_libro(catalogo):
     print ("Agregar un nuevo libro al catálogo")
-    categoria = input("Ingrese la categoría del libro: ").strip().capitalize()
+    categoria = input("Ingrese la categoría del libro. Si la categoría no existe, se creará una nueva categoría👀: ").strip().capitalize()
     titulo = input("Ingrese el título del libro: ").strip()
     autor = input("Ingrese el autor del libro: ").strip()
     año = input("Ingrese el año del libro: ").strip()
@@ -162,47 +162,41 @@ def agregar_libro(catalogo):
         print(f"La categoria {categoria} no existia, se ha creado una nueva categoria.")
     #Agrega el diccionario del libro a la categoria correspondiente
     catalogo[categoria].append(nuevo_libro)
-    print(f"El libro '{titulo}' ha sido agregado a la categoría '{categoria}' exitosamente.")
+    print(f"El libro '{titulo}' ha sido agregado a la categoría '{categoria}' exitosamente👍.")
 
-def listar_catalogo(catalogo):
-    """
-    Imprime el catálogo completo de libros, organizado por categorías.
-    Muestra título, autor, año y estado de disponibilidad.
-    """
+def listar_catalogo(catalogo): #Imprime el catálogo completo de libros, organizado por categorías.
+    #Muestra título, autor, año y estado de disponibilidad.
     print("\n=======================================================")
     print("           📚 CATÁLOGO GENERAL DE LIBROS 📚            ")
     print("=======================================================")
     
-    # Si el catálogo principal está vacío, salimos.
+    # Si el catálogo principal está vacío, se sale.
     if not catalogo:
-        print("El catálogo está completamente vacío.")
+        print("El catálogo está vacio.")
         return
 
     total_libros_general = 0
     
-    # 1. Iterar sobre las categorías (las claves del diccionario)
+    # 1. Itera sobre las categorías (las claves del diccionario)
     for categoria, lista_libros in catalogo.items():
         
         num_libros_categoria = len(lista_libros)
         total_libros_general += num_libros_categoria
         
-        # Imprimir el encabezado de la categoría
+        # Imprime el encabezado de la categoría
         print(f"\n--- 📖 CATEGORÍA: {categoria} ({num_libros_categoria} Títulos) ---")
         
         if not lista_libros:
             print("  (No hay libros registrados en esta categoría.)")
             continue
             
-        # 2. Iterar sobre los libros (la lista de diccionarios) dentro de la categoría
+        # 2. Itera sobre los libros (la lista de diccionarios) dentro de la categoría
         for i, libro in enumerate(lista_libros, 1):
-            
-            # Definir el estado para mostrarlo con claridad
+            # Define el estado para mostrarlo
             estado = "✅ DISPONIBLE" if libro.get("disponible", False) else "❌ PRESTADO"
-            
-            # 3. Imprimir los detalles del libro
+            # 3. Imprime los detalles del libro
             print(f"  {i}. Título: {libro['titulo']}")
             print(f"     Autor: {libro['autor']} | Año: {libro['año']} | Estado: {estado}")
-            
     print("\n=======================================================")
     print(f"RESUMEN: Total de libros en el catálogo: {total_libros_general}")
     print("=======================================================")
