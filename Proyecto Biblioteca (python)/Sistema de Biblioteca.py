@@ -1,3 +1,8 @@
+#Para que los datos se queden guardados
+import json
+import os
+
+                            #-ESTRUCTURA DE DATOS Y REGISTRO DE LIBROS- (PARTE DE YOMAR) -
 #Catalogos de Libros
 catalogo_principal = {
     "Clasicos": [
@@ -172,7 +177,7 @@ def listar_catalogo(catalogo): #Imprime el catálogo completo de libros, organiz
     
     # Si el catálogo principal está vacío, se sale.
     if not catalogo:
-        print("El catálogo está vacio.")
+        print("El catálogo está vacio :(")
         return
 
     total_libros_general = 0
@@ -187,7 +192,7 @@ def listar_catalogo(catalogo): #Imprime el catálogo completo de libros, organiz
         print(f"\n--- 📖 CATEGORÍA: {categoria} ({num_libros_categoria} Títulos) ---")
         
         if not lista_libros:
-            print("  (No hay libros registrados en esta categoría.)")
+            print("No hay libros registrados en esta categoría.")
             continue
             
         # 2. Itera sobre los libros (la lista de diccionarios) dentro de la categoría
@@ -201,8 +206,8 @@ def listar_catalogo(catalogo): #Imprime el catálogo completo de libros, organiz
     print(f"RESUMEN: Total de libros en el catálogo: {total_libros_general}")
     print("=======================================================")
     
-#probando cambios
-# — PRÉSTAMOS, DEVOLUCIONES Y DISPONIBILIDAD - (PARTE DE SIGNY) -
+
+                        # — PRÉSTAMOS, DEVOLUCIONES Y DISPONIBILIDAD - (PARTE DE SIGNY) -
 def _buscar_libro(catalogo, titulo_buscado): #Función para buscar un libro por título, retorna al diccionario si existe, o None si no.
     for lista_libros in catalogo.values(): # Recorre el diccionario
         for libro in lista_libros:
@@ -211,7 +216,7 @@ def _buscar_libro(catalogo, titulo_buscado): #Función para buscar un libro por 
     return None
 
 def prestar_libro(catalogo): #Solicita un título al usuario y gestiona el préstamo cambiando la disponibilidad.
-    print("\n--- 📖 PRÉSTAMO DE LIBROS ---")
+    print("\n--- 📖 SOLICITAR PRÉSTAMO DE LIBROS ---")
     titulo = input("Ingrese el título del libro que desea usar: ").strip()
     if not titulo:
         print("❌ Error: Debe de ingresar el nombre del título.")
@@ -244,7 +249,7 @@ def devolver_libro(catalogo): #Solicita un título al usuario y lo devuelve.
     else:
         print(f"❌ Error: No encontramos el libro '{titulo}' en el catálogo para devolverlo.")
 
-#-REPORTES Y ESTADISTICAS- (PARTE DE ANGEL) -
+                               #-REPORTES Y ESTADISTICAS- (PARTE DE ANGEL) -
 def mostrar_libros_disponibles(catalogo): #Genera un reporte de todos los libros que están disponibles.
     print("\n=======================================")
     print("   📊 REPORTE DE LIBROS DISPONIBLES    ")
@@ -317,4 +322,85 @@ def generar_estadisticas_uso(catalogo): #Calcula las estadísticas (total de lib
     print(f"📊 Porcentaje de Préstamos:      {porcentaje_ocupacion:.2f}%")
     print(f"📊 Porcentaje de Disponibilidad: {porcentaje_disponibilidad:.2f}%")
     print("=======================================")
-    
+
+                             #-EXTRAS Y PERSISTENCIA DE DATOS- (PARTE DE GABRIELA) -
+NOMBRE_ARCHIVO = "datos_biblioteca.json"
+
+def guardar_catalogo_archivo(catalogo): #guarda el diccionario del catálogo en un archivo JSON.
+    try:
+        with open(NOMBRE_ARCHIVO, 'w', encoding='utf-8') as archivo:
+            json.dump(catalogo, archivo, indent=4, ensure_ascii=False)
+        print(f"\n💾 ¡Datos guardados exitosamente en '{NOMBRE_ARCHIVO}'!")
+    except Exception as e:
+        print(f"\n❌ Error al guardar el archivo: {e}")
+
+
+def cargar_catalogo_archivo(catalogo_por_defecto): #Intenta cargar el catálogo desde el archivo JSON.
+    #Si el archivo no existe, retorna el catálogo por defecto (el que está en el código.
+
+    if os.path.exists(NOMBRE_ARCHIVO):
+        try:
+            with open(NOMBRE_ARCHIVO, 'r', encoding='utf-8') as archivo:
+                datos_cargados = json.load(archivo)
+            print(f"\n📂 Se han cargado los datos previos desde '{NOMBRE_ARCHIVO}'.")
+            return datos_cargados
+        except Exception as e:
+            print(f"⚠️ Error al leer el archivo (se usará el catálogo por defecto): {e}")
+            return catalogo_por_defecto
+    else:
+        print("\n🆕 No se encontró archivo previo. Se inicia con el catálogo por defecto.")
+        return catalogo_por_defecto
+
+
+def menu_principal(): #controla el flujo del programa y conecta las funciones de las Personas 1, 2 y 3.
+    #Cargar datos al iniciar
+    mi_catalogo = cargar_catalogo_archivo(catalogo_principal)
+
+    while True:
+        print("\n=============================================")
+        print("      🏛️  SISTEMA DE GESTIÓN DE BIBLIOTECA    ")
+        print("=============================================")
+        print("1.  📜  Listar Catálogo Completo")
+        print("2.  ➕  Agregar Nuevo Libro")
+        print("3.  🤝  Solicitar un Libro")
+        print("4.  ↩️  Devolver Libro")
+        print("5.  📊  Reporte: Libros Disponibles")
+        print("6.  📊  Reporte: Libros Prestados")
+        print("7.  📈  Estadísticas Generales")
+        print("8.  💾  Guardar y Salir")
+        print("---------------------------------------------")
+        
+        opcion = input("👉 Seleccione una opción (1-8): ").strip()
+
+        if opcion == '1':
+            listar_catalogo(mi_catalogo)
+            
+        #guardar_catalogo_archivo(mi_catalogo) 
+        elif opcion == '2':
+            agregar_libro(mi_catalogo) #guarda automáticamente después de agregar
+        
+        elif opcion == '3':
+            prestar_libro(mi_catalogo)
+        
+        elif opcion == '4':
+            devolver_libro(mi_catalogo)
+        
+        elif opcion == '5':
+            mostrar_libros_disponibles(mi_catalogo)
+        
+        elif opcion == '6':
+            mostrar_libros_prestados(mi_catalogo)
+            
+        elif opcion == '7':
+            generar_estadisticas_uso(mi_catalogo)
+            
+        elif opcion == '8':
+            print("\nGuardando cambios...")
+            guardar_catalogo_archivo(mi_catalogo)
+            print("👋 ¡Gracias por usar el papusistemas biblioteca! Hasta pronto.")
+            break
+        else:
+            print("❌ Opción no válida. Por favor ingrese del 1 hasta el 8.")
+
+if __name__ == "__main__":
+    menu_principal()
